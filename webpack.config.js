@@ -47,10 +47,14 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: devMode ? 'css/[name].css' : 'css/[name].[hash].css',
       chunkFilename: devMode ? 'css/[id].css' : 'css/[id].[hash].css'
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  
   ],
   devServer: {
+    hot: true,
     contentBase: path.join(__dirname, 'public'),
+    publicPath: '/',
     compress: true,
     port: 3000
   }
