@@ -49,7 +49,7 @@ input {
 .column {
   width: 270px;
   margin: 0 5px;
-  height: 100%;
+  height: 50%;
   box-sizing: border-box;
   display: inline-block;
   vertical-align: top;
@@ -117,7 +117,7 @@ input {
   margin-bottom: 5px;
   transition: transform 0.25s ease;
   transition: opacity 0.25s ease;
-  height: 16px;
+  height: 37px;
   position: relative;
   z-index: 0;
 }
@@ -191,12 +191,16 @@ input {
   transform: rotate(4deg);
 } 
 
-.table.ui-datepicker-calendar{
-  background: green;
+
+.onelist {
+  display: none;
 }
 
-#toggle {
-  width: 100px;
-  height: 100px;
-  background: #ccc;
+.addlist {
+  width: 270px;
+  margin: 0 5px;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
 }

@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 require('webpack-jquery-ui');
 import '../css/styles.css';
+import 'jquery-ui/themes/base/all.css';
 
 /**
  * jtrello
@@ -44,6 +45,7 @@ const jtrello = (function() {
     DOM.$archive = $('.buttonArchive');
     DOM.showArchive = $('.showArchive');
     DOM.gameOver = $('.buttonOver');
+    DOM.$listContainer = $('.listContainer');
   }
 
   function createTabs() {}
@@ -52,6 +54,7 @@ const jtrello = (function() {
   /*
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
   *  createList, deleteList, createCard och deleteCard etc.
+  * 
   */
 
   function bindEvents() {
@@ -77,31 +80,35 @@ const jtrello = (function() {
   function createList(event) {
     event.preventDefault();
     
-    console.log("This should create a new list");
-    /* let myShinyNewDiv = $('<div class="column">');
-    myShinyNewDiv.html('<div class="list"');
-    $(DOM.$board).append(myShinyNewDiv);
-    var a = $('#selector').html();
-    var b = $('#selector').html(a); */
-   
-    /* let myOtherDiv = $('<div class ="column listz">').html(DOM.$listcolumns);
-    $(DOM.$board).append(myOtherDiv); */
-   /*  let listInput = $('form :input').val(); 
-    console.log(listInput); 
-    console.log(DOM.$listcolumns);
-    $(this).closest(DOM.$listcolumns).css('background', 'yellow'); */
-
-
-   /* let newList = $('form').closest(DOM.$listcolumns).clone(true, true);
+    /* console.log("This should create a new list");
 
     
-    $(newList).prependTo(DOM.$board); */
+    $(newList).prependTo(DOM.$board); 
     let lastListItem = $(DOM.$listcolumns).last().clone(true, true);
     $(lastListItem).prependTo(DOM.$board);
     console.log(lastListItem);
     
-    /* $(DOM.$listcolumns).clone(true, true).prependTo(DOM.$board); */
-    /* let listInput = $('form :input').val(); 
+   
+    let listInput = $('input[name=title]').val(); 
+    console.log(listInput);  */
+
+    console.log("This should create a new list");
+    /* $(newList).prependTo(DOM.$board); */
+    
+    /* let listInput = $($.parseHTML(event.originalEvent.path[0].value)).text().trim(); */
+    let dateInfo = $('input[name=newlist]').val();
+    
+    
+    
+    let listItem = $(DOM.$listcolumns).clone(true, true);
+    
+    listItem.addClass('column onelist').css('display', 'inline-block');
+    $(listItem).find('h1').text(dateInfo);
+    $(listItem).prependTo('.listContainer');
+    /* console.log(listItem); */
+    
+   
+    /* let listInput = $('input[name=title]').val(); 
     console.log(listInput);  */
    
     
@@ -109,25 +116,27 @@ const jtrello = (function() {
 
   function createCard(event) {
     event.preventDefault();
-    console.log("This should create a new card");
+    /* console.log("This should create a new card"); */
 
     // Get dateinfo
-    let dateInfo = $('input[name=datepicker]').val();
+    let dateInfo = $('input[name="datepicker"]').val();
     
+    let cardInput = $($.parseHTML(event.originalEvent.path[0].title.value)).text().trim();
     
-    
-    let cardInput = $('form :input').val();
-    console.log(cardInput);
-    let newCard = $('<li class="card">' + cardInput + dateInfo + ' ' + '<button class="button delete">X</button>  <button class="buttonArchive">Archive</button><li>');
+    /* let cardInput = $(event.originalEvent.path[0].title.value); */
+    /* console.log(event); */
+    let newCard = $('<li class="card ui-sortable-handle">' + cardInput + dateInfo + '<button class="button delete">X</button> <button class="buttonShowDialog">Show Info</button> <button class="buttonArchive">Archive</button><li>');
     
     // Lägg till click event på nyskapade element
-   /*  newCard.on('click', deleteCard); */
+    newCard.on('click', deleteCard);
     newCard.on('click', archiveCard);
-  
+    
+
+    
     $(newCard).prependTo($(this).closest('ul')); // lägg till delegate()
     
     /* newCard = undefined; */
-    
+
     
   }
 
@@ -165,7 +174,7 @@ const jtrello = (function() {
       })
 
       $('.list-cards').sortable({
-        connectWith: 'ul'
+        connectWith: 'list-cards'
       });
    
   }
@@ -193,7 +202,7 @@ const jtrello = (function() {
   function datePick() {
     $('.datepick').each(function(){
       $(this).datepicker({
-        altField: ".calender"
+       /*  altField: "'calendar'" */
       });
   });
   }
@@ -216,7 +225,10 @@ const jtrello = (function() {
   }
 
   function archiveCard() {
+   
+    /* $(event.target).closest('.card').toggle("drop"); */ // DROP EFFECT
     $(this).closest('.card').appendTo('.thearchive');
+    
   }
 
   function showArchive() {
@@ -228,9 +240,51 @@ const jtrello = (function() {
    
       $( ".board" ).toggle( "explode" );
 
-  }
-  
+  } 
 
+ // WIDGET
+  
+  /* $.widget("js.changebackground", {
+      _create: function() {
+
+        function randomColor() {
+          var letters = '0123456789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+
+        this.element
+          .css('background', randomColor());
+      }
+  }); */
+
+
+  /* $.widget("js.changebackground", {
+    
+    options: {
+
+    },
+    
+    
+    _create: function() {
+        
+        this.element.css('background', randomColor());
+    },
+
+    randomColor: function() {
+      
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      
+    }
+}); */
   /* =================== Publika metoder nedan ================== */
 
   // Init metod som körs först
@@ -263,4 +317,10 @@ const jtrello = (function() {
 //usage
 $("document").ready(function() {
   jtrello.init();
+
+  $('.board').changebackground();
+
+  /* $.widget("js.changebackground", {
+
+  }).  */
 });
