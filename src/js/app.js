@@ -16,6 +16,9 @@ const jtrello = (function() {
   // Referens internt i modulen för DOM element
   let DOM = {};
 
+  // Globala variabler
+  
+
   /* =================== Privata metoder nedan ================= */
   function captureDOMEls() {
     DOM.$board = $('.board');
@@ -35,6 +38,12 @@ const jtrello = (function() {
     // Own Captures
     DOM.$listcolumns = $('.onelist')
     DOM.$newListForm = $('form.new-list');
+    DOM.$showDialog = $('.buttonShowDialog');
+    DOM.$hideDialog = $('.hideDialog');
+    DOM.$session = $('.buttonSession');
+    DOM.$archive = $('.buttonArchive');
+    DOM.showArchive = $('.showArchive');
+    DOM.gameOver = $('.buttonOver');
   }
 
   function createTabs() {}
@@ -44,27 +53,7 @@ const jtrello = (function() {
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
   *  createList, deleteList, createCard och deleteCard etc.
   */
-  /* $(function(){
-    $('.listz').draggable();
-  }); */
 
-  /* $('.listz').sortable({
-    appendTo: document.body,
-    containment: ".board",
-
-  }); */
-  /* $(function(){
-    $('.card').sortable({
-      connectWith: '.card'
-    });
-  }); */
-  
-  /* $('.card').sortable({
-    connectWith: "#shopping-cart"
-  }); */
-
-
-  
   function bindEvents() {
     /* DOM.$newListButton.on('click', createList); */
     DOM.$deleteListButton.on('click', deleteList);
@@ -74,7 +63,13 @@ const jtrello = (function() {
     
     // Own Binds
     DOM.$newListForm.on('submit', createList);
-    DOM.$cards.on('click', showDialog);
+    /* DOM.$cards.on('click', showDialog); */
+    DOM.$showDialog.on('click', showDialog );
+    DOM.$hideDialog.on('click', hideDialog );
+    DOM.$session.on('click', sessioncome);
+    DOM.$archive.on('click', archiveCard);
+    DOM.showArchive.on('click', showArchive);
+    DOM.gameOver.on('click', gameOver);
     
   }
 
@@ -115,16 +110,25 @@ const jtrello = (function() {
   function createCard(event) {
     event.preventDefault();
     console.log("This should create a new card");
+
+    // Get dateinfo
+    let dateInfo = $('input[name=datepicker]').val();
+    
     
     
     let cardInput = $('form :input').val();
     console.log(cardInput);
-    let newCard = $('<li class="card">' + cardInput + '<button class="button delete">X</button><li>');
+    let newCard = $('<li class="card">' + cardInput + dateInfo + ' ' + '<button class="button delete">X</button>  <button class="buttonArchive">Archive</button><li>');
     
     // Lägg till click event på nyskapade element
-    newCard.on('click', deleteCard);
+   /*  newCard.on('click', deleteCard); */
+    newCard.on('click', archiveCard);
   
-    $(newCard).delegate().prependTo($(this).closest('ul'));
+    $(newCard).prependTo($(this).closest('ul')); // lägg till delegate()
+    
+    /* newCard = undefined; */
+    
+    
   }
 
   function deleteList() {
@@ -135,38 +139,97 @@ const jtrello = (function() {
   }
 
   /* =========== Metoder för att hantera kort i listor nedan =========== */
-  
+  /* $( document ).click(function() {
+    $( ".list" ).toggle( "explode" );
+  }); */
 
-  function deleteCard() {
+  function deleteCard(event) {
     console.log("This should delete the card you clicked on");
     
     
     $(this).closest('li').remove();
+    $(event.target).closest('.card').toggle( "explode" );
+    /* $(".list").toggle("explode") */
+    
   }
 
   // Metod för att rita ut element i DOM:en
   function render() {}
 
   function sortableElements() {
-    
+
+      $('.listContainer').sortable({
+        connectWith: 'onelist',
+        containment: "parent",
+        forcePlaceholderSize: true
+      })
+
       $('.list-cards').sortable({
         connectWith: 'ul'
       });
    
   }
 
+ /*  $('.dialog').dialog({
+    autoOpen: false
+  }); */
+  function createTabs() {
+    $( ".dialog" ).tabs();
+  }
   
-
   function dialogElements() {
     $( ".dialog" ).dialog({
-      autoOpen: false
-      /* appendTo: "#someElem" */
+      autoOpen: false,
     });
   }
 
   function showDialog() {
-    $(this).dialog( "option", "autoOpen", true );
+   /*  $('.buttonShowDialog').dialog( "option", "autoOpen", true ); */
+    $( ".dialog" ).dialog({
+      autoOpen: true,
+    });
   }
+  
+  function datePick() {
+    $('.datepick').each(function(){
+      $(this).datepicker({
+        altField: ".calender"
+      });
+  });
+  }
+
+  function hideDialog() {
+    $(this).closest('.dialog').hide();
+   /*  $('.ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle').css("display", "none");  */
+  }
+
+  function storeSessions() {
+    var htmlContents = document.documentElement.innerHTML;
+    console.log(htmlContents);
+
+    localStorage.setItem('myBook', JSON.stringify(htmlContents ));
+  }
+
+  function sessioncome() {
+    var hej = localStorage.getItem('myBook');
+    console.log(hej);
+  }
+
+  function archiveCard() {
+    $(this).closest('.card').appendTo('.thearchive');
+  }
+
+  function showArchive() {
+    $('.thearchive' ).toggle('slow');
+   
+  }
+
+  function gameOver() {
+   
+      $( ".board" ).toggle( "explode" );
+
+  }
+  
 
   /* =================== Publika metoder nedan ================== */
 
@@ -176,9 +239,18 @@ const jtrello = (function() {
     // Förslag på privata metoder
     captureDOMEls();
     createTabs();
-    createDialogs();
-    sortableElements();
     bindEvents();
+
+    // egna
+    sortableElements();
+    createDialogs();
+    dialogElements();
+    datePick();
+    createTabs();
+    storeSessions();
+   
+    
+    
     
   }
 

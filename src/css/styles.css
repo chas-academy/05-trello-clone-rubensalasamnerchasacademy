@@ -56,7 +56,7 @@ input {
   white-space: nowrap;
 }
 
-.list {
+ .list {
   background: #e2e4e6;
   border-radius: 3px;
   box-sizing: border-box;
@@ -189,4 +189,14 @@ input {
   cursor: grabbing;
   box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.3), 0px 0px 1px rgba(0, 0, 0, 0.5);
   transform: rotate(4deg);
+} 
+
+.table.ui-datepicker-calendar{
+  background: green;
+}
+
+#toggle {
+  width: 100px;
+  height: 100px;
+  background: #ccc;
 }

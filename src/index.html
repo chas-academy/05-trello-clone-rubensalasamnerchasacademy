@@ -7,66 +7,102 @@
     <title>jQuery UI - Trello Clone (yay!)</title>
 </head>
 <body>
-    
-    <div class="board ui-sortable">
-        <div class="column onelist ui-sortable-handle">
-            <div class="list">
-                <div class="list-header">
-                    Todo
-                    <button class="button delete">X</button>
-                </div>
-                <ul class="list-cards ui-sortable">
-                    <li class="card ui-sortable-handle">
-                        Card #1<div class="dialog"><p>Is this how dialog works</p></div>
+        <button class="buttonSession">SESSION</button><button class="buttonOver">Destroy Session</button>
+    <div class="board">
+        <div class="listContainer">
+            <div class="column onelist">
+                <div class="list">
+                    <div class="list-header">
+                        Todo
                         <button class="button delete">X</button>
-                    </li>
-                    <li class="add-new">
-                        <form class="new-card" action="index.html">
-                            <input type="text" name="title" placeholder="Please name the card" />
-                            <button class="button add">Add new card</button>
-                        </form>
-                    </li>
-                </ul>
+                    </div>
+                    <ul class="list-cards">
+                        
+                        <li class="card">
+                        
+                            <button class="button delete">X</button>
+                            <div class="dialog">
+
+                                            <ul>
+                                              <li><a href="#fragment-1"><span>One</span></a></li>
+                                              <li><a href="#fragment-2"><span>Two</span></a></li>
+                                              <li><a href="#fragment-3"><span>Three</span></a></li>
+                                            </ul>
+                                            <div id="fragment-1">
+                                              <p>First tab is active by default:</p>
+                                              <pre><code>$( "#tabs" ).tabs(); </code></pre>
+                                            </div>
+                                            <div id="fragment-2">
+                                              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                            </div>
+                                            <div id="fragment-3">
+                                              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                            </div>
+
+                                          <button class="hideDialog">Hide</button>
+                                <p>Is this how dialog works</p>
+                            </div>
+                            <button class="buttonShowDialog">Show Info</button>
+                            <!-- Arkivera kort -->
+                            
+                                <button class="buttonArchive">Archive</button>
+                            
+                            
+                        </li>
+                        <li class="add-new">
+                            <form class="new-card" action="index.html">
+                                <input type="text" name="title" placeholder="Please name the card" />
+                                <input type="text" name="datepicker" class="datepick"/>
+                                <button class="button add">Add new card</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="column onelist ui-sortable-handle">
-            <div class="list">
-                <div class="list-header">
-                    Doing
-                    <button class="button delete">X</button>
-                </div>
-                <ul class="list-cards ui-sortable">
-                    <li class="card ui-sortable-handle">
-                        Card #2
+            <div class="column onelist">
+                <div class="list">
+                    <div class="list-header">
+                        Doing
                         <button class="button delete">X</button>
-                    </li>
-                    <li class="add-new">
-                        <form class="new-card" action="index.html">
-                            <input type="text" name="title" placeholder="Please name the card" />
-                            <button class="button add">Add new card</button>
-                        </form>
-                    </li>
-                </ul>
+                    </div>
+                    <ul class="list-cards">
+                        <li class="card">
+                            Card #2
+                            <button class="button delete">X</button>
+                        </li>
+                        <li class="add-new">
+                            <form class="new-card" action="index.html">
+                                <input type="text" name="title" placeholder="Please name the card" />
+                                <input type="text" name="datepicker" class="datepick"/>
+                                <button class="button add">Add new card</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="column onelist ui-sortable-handle">
-            <div class="list">
-                <div class="list-header">
-                    Done
-                    <button class="button delete">X</button>
-                </div>
-                <ul class="list-cards ui-sortable ">
-                    <li class="card ui-sortable-handle">
-                        Card #3
+            <div class="column onelist">
+                <div class="list">
+                    <div class="list-header">
+                        Done
                         <button class="button delete">X</button>
-                    </li>
-                    <li class="add-new">
-                        <form class="new-card" action="index.html">
-                            <input type="text" name="title" placeholder="Please name the card" />
-                            <button class="button add">Add new card</button>
-                        </form>
-                    </li>
-                </ul>
+                    </div>
+                    <ul class="list-cards">
+                        <li class="card">
+                            Card #3
+                            <button class="button delete">X</button>
+                        </li>
+                        <li class="add-new">
+                            <form class="new-card" action="index.html">
+                                <input type="text" name="title" placeholder="Please name the card" />
+                                <input type="text" name="datepicker" class="datepick"/>
+                                <button class="button add">Add new card</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="column">
@@ -79,6 +115,12 @@
                     <button id="new-list" class="button">Add new list</button>
                 
         </form>
+            
+        </div>
+        <h1>THE ARHICVE</h1>
+        <button class="showArchive">Show Archive</button>
+        <div class="thearchive">
+            
             
         </div>
     </div>
