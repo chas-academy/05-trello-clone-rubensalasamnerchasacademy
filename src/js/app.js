@@ -33,7 +33,7 @@ const jtrello = (function() {
     DOM.$deleteCardButton = $('.card > button.delete');
 
     // Own Captures
-    DOM.$listcolumns = $('.listz')
+    DOM.$listcolumns = $('.onelist')
     DOM.$newListForm = $('form.new-list');
   }
 
@@ -44,6 +44,27 @@ const jtrello = (function() {
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
   *  createList, deleteList, createCard och deleteCard etc.
   */
+  /* $(function(){
+    $('.listz').draggable();
+  }); */
+
+  /* $('.listz').sortable({
+    appendTo: document.body,
+    containment: ".board",
+
+  }); */
+  /* $(function(){
+    $('.card').sortable({
+      connectWith: '.card'
+    });
+  }); */
+  
+  /* $('.card').sortable({
+    connectWith: "#shopping-cart"
+  }); */
+
+
+  
   function bindEvents() {
     /* DOM.$newListButton.on('click', createList); */
     DOM.$deleteListButton.on('click', deleteList);
@@ -53,6 +74,8 @@ const jtrello = (function() {
     
     // Own Binds
     DOM.$newListForm.on('submit', createList);
+    DOM.$cards.on('click', showDialog);
+    
   }
 
   /* ============== Metoder för att hantera listor nedan ============== */
@@ -68,59 +91,82 @@ const jtrello = (function() {
    
     /* let myOtherDiv = $('<div class ="column listz">').html(DOM.$listcolumns);
     $(DOM.$board).append(myOtherDiv); */
-    var newList = $(this).closest(DOM.$listcolumns).clone(true, true);
-    console.log(newList);
-    $(newList).prependTo(DOM.$board);
+   /*  let listInput = $('form :input').val(); 
+    console.log(listInput); 
+    console.log(DOM.$listcolumns);
+    $(this).closest(DOM.$listcolumns).css('background', 'yellow'); */
+
+
+   /* let newList = $('form').closest(DOM.$listcolumns).clone(true, true);
 
     
+    $(newList).prependTo(DOM.$board); */
+    let lastListItem = $(DOM.$listcolumns).last().clone(true, true);
+    $(lastListItem).prependTo(DOM.$board);
+    console.log(lastListItem);
     
-    /* $(DOM.$listcolumns).clone(true, true).prependTo(DOM.$board);
-    let listInput = $('form :input').val(); */
-    /* console.log(listInput);  */
+    /* $(DOM.$listcolumns).clone(true, true).prependTo(DOM.$board); */
+    /* let listInput = $('form :input').val(); 
+    console.log(listInput);  */
    
     
   }
 
-  function deleteList() {
-    console.log("This should delete the list you clicked on");
-    
-    var clicked = $(this);
-    $(this).closest('.list').remove();
-   
-  }
-
-  /* =========== Metoder för att hantera kort i listor nedan =========== */
   function createCard(event) {
     event.preventDefault();
     console.log("This should create a new card");
     
     
     let cardInput = $('form :input').val();
-  
+    console.log(cardInput);
     let newCard = $('<li class="card">' + cardInput + '<button class="button delete">X</button><li>');
     
     // Lägg till click event på nyskapade element
     newCard.on('click', deleteCard);
   
     $(newCard).delegate().prependTo($(this).closest('ul'));
-    
-    
-    
-    console.log(cardInput);
-    
-    
-  
   }
+
+  function deleteList() {
+    console.log("This should delete the list you clicked on");
+    
+    
+    $(this).closest('.list').remove();
+  }
+
+  /* =========== Metoder för att hantera kort i listor nedan =========== */
+  
 
   function deleteCard() {
     console.log("This should delete the card you clicked on");
     
-    var clicked = $(this);
+    
     $(this).closest('li').remove();
   }
 
   // Metod för att rita ut element i DOM:en
   function render() {}
+
+  function sortableElements() {
+    
+      $('.list-cards').sortable({
+        connectWith: 'ul'
+      });
+   
+  }
+
+  
+
+  function dialogElements() {
+    $( ".dialog" ).dialog({
+      autoOpen: false
+      /* appendTo: "#someElem" */
+    });
+  }
+
+  function showDialog() {
+    $(this).dialog( "option", "autoOpen", true );
+  }
 
   /* =================== Publika metoder nedan ================== */
 
@@ -131,8 +177,9 @@ const jtrello = (function() {
     captureDOMEls();
     createTabs();
     createDialogs();
-
+    sortableElements();
     bindEvents();
+    
   }
 
   // All kod här
