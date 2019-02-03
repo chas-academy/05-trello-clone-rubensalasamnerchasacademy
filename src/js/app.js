@@ -3,6 +3,7 @@ import $ from 'jquery';
 require('webpack-jquery-ui');
 import '../css/styles.css';
 import 'jquery-ui/themes/base/all.css';
+import { finished } from 'stream';
 
 /**
  * jtrello
@@ -48,8 +49,19 @@ const jtrello = (function() {
     DOM.$listContainer = $('.listContainer');
   }
 
-  function createTabs() {}
-  function createDialogs() {}
+ 
+ 
+ 
+  
+ 
+ 
+ 
+  function createTabs() {
+    $('#tabs').tabs();
+  }
+  function createDialogs() {
+    DOM.$listDialog.dialog('open');
+  }
 
   /*
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
@@ -58,11 +70,10 @@ const jtrello = (function() {
   */
 
   function bindEvents() {
-    /* DOM.$newListButton.on('click', createList); */
-    DOM.$deleteListButton.on('click', deleteList);
-
-    DOM.$newCardForm.on('submit', createCard);
-    DOM.$deleteCardButton.on('click', deleteCard);
+    DOM.$board.on("click", ".list-header > button.delete", deleteList);
+    DOM.$board.on("submit", "form.new-card", createCard);
+    DOM.$board.on("click", ".card > button.delete", deleteCard);
+   
     
     // Own Binds
     DOM.$newListForm.on('submit', createList);
@@ -79,72 +90,72 @@ const jtrello = (function() {
   /* ============== Metoder för att hantera listor nedan ============== */
   function createList(event) {
     event.preventDefault();
-    
-    /* console.log("This should create a new list");
+    let title = $('input[name="newlist"').val();
+   
 
-    
-    $(newList).prependTo(DOM.$board); 
-    let lastListItem = $(DOM.$listcolumns).last().clone(true, true);
-    $(lastListItem).prependTo(DOM.$board);
-    console.log(lastListItem);
-    
-   
-    let listInput = $('input[name=title]').val(); 
-    console.log(listInput);  */
+    let newList = $(`<div class="column">
+    <div class="list">
+        <div class="list-header">
+            <h1>${title}</h1>
+            <button class="button delete">X</button>
+        </div>
+        <ul class="list-cards ui-sortable">
+           
+            <li class="add-new">
+                <form class="new-card" action="index.html">
+                    <input type="text" autocomplete="off" name="title" placeholder="Please name the card" />
+                    <input type="text" autocomplete="off" name="datepicker" placeholder="Date" class="datepick"/>
+                    <button class="button add">Add new card</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+`);
 
-    console.log("This should create a new list");
-    /* $(newList).prependTo(DOM.$board); */
-    
-    /* let listInput = $($.parseHTML(event.originalEvent.path[0].value)).text().trim(); */
-    let dateInfo = $('input[name=newlist]').val();
-    
-    
-    
-    let listItem = $(DOM.$listcolumns).clone(true, true);
-    
-    listItem.addClass('column onelist').css('display', 'inline-block');
-    $(listItem).find('h1').text(dateInfo);
-    $(listItem).prependTo('.listContainer');
-    /* console.log(listItem); */
-    
    
-    /* let listInput = $('input[name=title]').val(); 
-    console.log(listInput);  */
+    
+    $('.board').append(newList);
+    
+   /*  newList = (""); */
+    
+    datePick();
    
+    
+
     
   }
 
   function createCard(event) {
     event.preventDefault();
-    /* console.log("This should create a new card"); */
-
-    // Get dateinfo
-    let dateInfo = $('input[name="datepicker"]').val();
     
+    let dateInfo = $($.parseHTML(event.originalEvent.path[0][1].value)).text().trim();
     let cardInput = $($.parseHTML(event.originalEvent.path[0].title.value)).text().trim();
     
-    /* let cardInput = $(event.originalEvent.path[0].title.value); */
-    /* console.log(event); */
+    
     let newCard = $('<li class="card ui-sortable-handle">' + cardInput + dateInfo + '<button class="button delete">X</button> <button class="buttonShowDialog">Show Info</button> <button class="buttonArchive">Archive</button><li>');
     
-    // Lägg till click event på nyskapade element
-    newCard.on('click', deleteCard);
-    newCard.on('click', archiveCard);
+    $(newCard).prependTo($(this).closest('ul')); 
     
+    
+    sortableElements();
+    
+ 
+  }
 
-    
-    $(newCard).prependTo($(this).closest('ul')); // lägg till delegate()
-    
-    /* newCard = undefined; */
+  function dialogElements () {
+    $(".dialog" ).dialog();
+    console.log("YAAYAYA");
+    /* let dialog = $(`<div class="dialog"><h1>CROUCHING TIGER HIDDEN DRAGON</h1><div>`); */
+    $(this).closest('li').addClass('hej');
 
-    
   }
 
   function deleteList() {
     console.log("This should delete the list you clicked on");
     
     
-    $(this).closest('.list').remove();
+    $(this).closest('.column').remove();
   }
 
   /* =========== Metoder för att hantera kort i listor nedan =========== */
@@ -167,11 +178,11 @@ const jtrello = (function() {
 
   function sortableElements() {
 
-      $('.listContainer').sortable({
-        connectWith: 'onelist',
-        containment: "parent",
-        forcePlaceholderSize: true
-      })
+      $('.board').sortable({
+        connectWith: 'column'
+        /* containment: "parent",
+        forcePlaceholderSize: true */
+      });
 
       $('.list-cards').sortable({
         connectWith: 'list-cards'
@@ -179,18 +190,11 @@ const jtrello = (function() {
    
   }
 
- /*  $('.dialog').dialog({
-    autoOpen: false
-  }); */
   function createTabs() {
     $( ".dialog" ).tabs();
   }
   
-  function dialogElements() {
-    $( ".dialog" ).dialog({
-      autoOpen: false,
-    });
-  }
+  
 
   function showDialog() {
    /*  $('.buttonShowDialog').dialog( "option", "autoOpen", true ); */
@@ -202,9 +206,18 @@ const jtrello = (function() {
   function datePick() {
     $('.datepick').each(function(){
       $(this).datepicker({
-       /*  altField: "'calendar'" */
+        /* altField: "'calendar'" */
       });
   });
+  /* console.log() $(this).find('.datepick').datepicker() */
+ /*  $(this).find('h1').css('color', 'green'); */
+ /*  console.log("hi");
+  console.log(event);
+  let hej = $(this).closest('div');
+  console.log(hej); */
+  /* $('h1').text('maybe'); */
+
+
   }
 
   function hideDialog() {
@@ -241,6 +254,25 @@ const jtrello = (function() {
       $( ".board" ).toggle( "explode" );
 
   } 
+
+  function sortableElements() {
+
+    $('.board').sortable({
+      connectWith: 'column'
+      /* containment: "parent",
+      forcePlaceholderSize: true */
+    });
+
+    $('.list-cards').sortable({
+      connectWith: 'list-cards'
+    });
+    $('.list-cards').sortable({ 
+      connectWith: '.list-cards' });
+    $('.column').sortable({ 
+      connectWith: '.column',
+      containment: "parent" });
+ 
+}
 
  // WIDGET
   
@@ -302,7 +334,7 @@ const jtrello = (function() {
     datePick();
     createTabs();
     storeSessions();
-   
+    
     
     
     
@@ -318,7 +350,7 @@ const jtrello = (function() {
 $("document").ready(function() {
   jtrello.init();
 
-  $('.board').changebackground();
+  /* $('.board').changebackground(); */
 
   /* $.widget("js.changebackground", {
 
