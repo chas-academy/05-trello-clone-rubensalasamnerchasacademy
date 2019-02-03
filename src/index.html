@@ -8,17 +8,70 @@
 </head>
 <body>
     <button class="buttonSession">SESSION</button><button class="buttonOver">Destroy Session</button>
-    <div class="addlist">
-                  
-        <form class="new-list" action="index.html"> 
-                <input type="text" autocomplete="off" name="newlist" placeholder="List title" />
-                <button id="new-list" class="button">Add new list</button>
-         </form>
-        
-    </div >
     <div class="board">
-            
+            <div class="addlist">
+                  
+                    <form class="new-list" action="index.html"> 
+                            <input type="text" autocomplete="off" name="newlist" placeholder="List title" />
+                            <button id="new-list" class="button">Add new list</button>
+                     </form>
+                    
+                </div >
+        <div class="listContainer">
+            <div class="column onelist">
+                <div class="list">
+                    <div class="list-header">
+                        <h1></h1>
+                        <button class="button delete">X</button>
+                    </div>
+                    <ul class="list-cards">
+                        
+                       
+                        
+                           
+                            <div class="dialog">
+
+                                            <ul>
+                                              <li><a href="#tab-1"><span>One</span></a></li>
+                                              <li><a href="#tab-2"><span>Two</span></a></li>
+                                              <li><a href="#tab-3"><span>Three</span></a></li>
+                                            </ul>
+                                            <div id="tab-1">
+                                              <p>I am first tab</p>
+                                            </div>
+                                            <div id="tab-2">
+                                              <p>I am second tab</p>
+                                            </div>
+                                            <div id="tab-3">
+                                              <p>I am third tab</p>
+                                            </div>
+
+                                          <button class="hideDialog">Hide</button>
+                                
+                            </div>
+
+                            
+                            
+                       
+                        <li class="add-new">
+                            <form class="new-card" action="index.html">
+                                <input type="text" autocomplete="off" name="title" placeholder="Please name the card" />
+                                <input type="text" autocomplete="off" name="datepicker" id="datepick" placeholder="Date"/>
+                                <button class="button add">Add new card</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+           
+        </div>
        
+        <h1>THE ARHICVE</h1>
+        <button class="showArchive">Show Archive</button>
+        <div class="thearchive">
+            
+            
+        </div>
     </div>
 
     <!-- <div id="list-creation-dialog" title="Create new list" style="height: 40px">

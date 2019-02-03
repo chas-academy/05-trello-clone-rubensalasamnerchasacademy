@@ -3,7 +3,6 @@ import $ from 'jquery';
 require('webpack-jquery-ui');
 import '../css/styles.css';
 import 'jquery-ui/themes/base/all.css';
-import { finished } from 'stream';
 
 /**
  * jtrello
@@ -49,19 +48,8 @@ const jtrello = (function() {
     DOM.$listContainer = $('.listContainer');
   }
 
- 
- 
- 
-  
- 
- 
- 
-  function createTabs() {
-    $('#tabs').tabs();
-  }
-  function createDialogs() {
-    DOM.$listDialog.dialog('open');
-  }
+  function createTabs() {}
+  function createDialogs() {}
 
   /*
   *  Denna metod kommer nyttja variabeln DOM för att binda eventlyssnare till
@@ -70,10 +58,11 @@ const jtrello = (function() {
   */
 
   function bindEvents() {
-    DOM.$board.on("click", ".list-header > button.delete", deleteList);
-    DOM.$board.on("submit", "form.new-card", createCard);
-    DOM.$board.on("click", ".card > button.delete", deleteCard);
-   
+    /* DOM.$newListButton.on('click', createList); */
+    DOM.$deleteListButton.on('click', deleteList);
+
+    DOM.$newCardForm.on('submit', createCard);
+    DOM.$deleteCardButton.on('click', deleteCard);
     
     // Own Binds
     DOM.$newListForm.on('submit', createList);
@@ -90,72 +79,58 @@ const jtrello = (function() {
   /* ============== Metoder för att hantera listor nedan ============== */
   function createList(event) {
     event.preventDefault();
-    let title = $('input[name="newlist"').val();
+    
+    console.log("This should create a new list");
+    
+    
+    let dateInfo = $('input[name=newlist]').val();
+    
+    
+    
+    let listItem = $(DOM.$listcolumns).clone(true, true);
+    
+    listItem.addClass('column onelist').css('display', 'inline-block');
+    $(listItem).find('h1').text(dateInfo);
+    $(listItem).prependTo('.listContainer');
+    /* console.log(listItem); */
+    
    
-
-    let newList = $(`<div class="column">
-    <div class="list">
-        <div class="list-header">
-            <h1>${title}</h1>
-            <button class="button delete">X</button>
-        </div>
-        <ul class="list-cards ui-sortable">
-           
-            <li class="add-new">
-                <form class="new-card" action="index.html">
-                    <input type="text" autocomplete="off" name="title" placeholder="Please name the card" />
-                    <input type="text" autocomplete="off" name="datepicker" placeholder="Date" class="datepick"/>
-                    <button class="button add">Add new card</button>
-                </form>
-            </li>
-        </ul>
-    </div>
-</div>
-`);
-
+    /* let listInput = $('input[name=title]').val(); 
+    console.log(listInput);  */
    
-    
-    $('.board').append(newList);
-    
-   /*  newList = (""); */
-    
     datePick();
-   
-    
-
-    
   }
 
   function createCard(event) {
     event.preventDefault();
     
-    let dateInfo = $($.parseHTML(event.originalEvent.path[0][1].value)).text().trim();
+    let dateInfo = $('input[name="datepicker"]').val();
+    console.log(event);
+    
     let cardInput = $($.parseHTML(event.originalEvent.path[0].title.value)).text().trim();
     
-    
+    /* let cardInput = $(event.originalEvent.path[0].title.value); */
+    /* console.log(event); */
     let newCard = $('<li class="card ui-sortable-handle">' + cardInput + dateInfo + '<button class="button delete">X</button> <button class="buttonShowDialog">Show Info</button> <button class="buttonArchive">Archive</button><li>');
     
-    $(newCard).prependTo($(this).closest('ul')); 
+    // Lägg till click event på nyskapade element
+    /* newCard.on('click', deleteCard);
+    newCard.on('click', archiveCard); */
     
+
     
+    $(newCard).prependTo($(this).closest('ul')); // lägg till delegate()
+    
+    /* newCard = undefined; */
     sortableElements();
     
- 
-  }
-
-  function dialogElements () {
-    $(".dialog" ).dialog();
-    console.log("YAAYAYA");
-    /* let dialog = $(`<div class="dialog"><h1>CROUCHING TIGER HIDDEN DRAGON</h1><div>`); */
-    $(this).closest('li').addClass('hej');
-
   }
 
   function deleteList() {
     console.log("This should delete the list you clicked on");
     
     
-    $(this).closest('.column').remove();
+    $(this).closest('.list').toggle( "bounce", { times: 2 }, "fast" );remove();
   }
 
   /* =========== Metoder för att hantera kort i listor nedan =========== */
@@ -163,12 +138,12 @@ const jtrello = (function() {
     $( ".list" ).toggle( "explode" );
   }); */
 
-  function deleteCard(event) {
+  function deleteCard() {
     console.log("This should delete the card you clicked on");
     
     
-    $(this).closest('li').remove();
-    $(event.target).closest('.card').toggle( "explode" );
+    $(this).closest('li').toggle("explode").remove();
+    /* $(event.target).closest('.card').toggle( "explode" ); */
     /* $(".list").toggle("explode") */
     
   }
@@ -176,147 +151,7 @@ const jtrello = (function() {
   // Metod för att rita ut element i DOM:en
   function render() {}
 
-  function sortableElements() {
-
-      $('.board').sortable({
-        connectWith: 'column'
-        /* containment: "parent",
-        forcePlaceholderSize: true */
-      });
-
-      $('.list-cards').sortable({
-        connectWith: 'list-cards'
-      });
-   
-  }
-
-  function createTabs() {
-    $( ".dialog" ).tabs();
-  }
   
-  
-
-  function showDialog() {
-   /*  $('.buttonShowDialog').dialog( "option", "autoOpen", true ); */
-    $( ".dialog" ).dialog({
-      autoOpen: true,
-    });
-  }
-  
-  function datePick() {
-    $('.datepick').each(function(){
-      $(this).datepicker({
-        /* altField: "'calendar'" */
-      });
-  });
-  /* console.log() $(this).find('.datepick').datepicker() */
- /*  $(this).find('h1').css('color', 'green'); */
- /*  console.log("hi");
-  console.log(event);
-  let hej = $(this).closest('div');
-  console.log(hej); */
-  /* $('h1').text('maybe'); */
-
-
-  }
-
-  function hideDialog() {
-    $(this).closest('.dialog').hide();
-   /*  $('.ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle').css("display", "none");  */
-  }
-
-  function storeSessions() {
-    var htmlContents = document.documentElement.innerHTML;
-    console.log(htmlContents);
-
-    localStorage.setItem('myBook', JSON.stringify(htmlContents ));
-  }
-
-  function sessioncome() {
-    var hej = localStorage.getItem('myBook');
-    console.log(hej);
-  }
-
-  function archiveCard() {
-   
-    /* $(event.target).closest('.card').toggle("drop"); */ // DROP EFFECT
-    $(this).closest('.card').appendTo('.thearchive');
-    
-  }
-
-  function showArchive() {
-    $('.thearchive' ).toggle('slow');
-   
-  }
-
-  function gameOver() {
-   
-      $( ".board" ).toggle( "explode" );
-
-  } 
-
-  function sortableElements() {
-
-    $('.board').sortable({
-      connectWith: 'column'
-      /* containment: "parent",
-      forcePlaceholderSize: true */
-    });
-
-    $('.list-cards').sortable({
-      connectWith: 'list-cards'
-    });
-    $('.list-cards').sortable({ 
-      connectWith: '.list-cards' });
-    $('.column').sortable({ 
-      connectWith: '.column',
-      containment: "parent" });
- 
-}
-
- // WIDGET
-  
-  /* $.widget("js.changebackground", {
-      _create: function() {
-
-        function randomColor() {
-          var letters = '0123456789ABCDEF';
-          var color = '#';
-          for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-          }
-          return color;
-        }
-
-        this.element
-          .css('background', randomColor());
-      }
-  }); */
-
-
-  /* $.widget("js.changebackground", {
-    
-    options: {
-
-    },
-    
-    
-    _create: function() {
-        
-        this.element.css('background', randomColor());
-    },
-
-    randomColor: function() {
-      
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-      
-    }
-}); */
   /* =================== Publika metoder nedan ================== */
 
   // Init metod som körs först
@@ -328,19 +163,137 @@ const jtrello = (function() {
     bindEvents();
 
     // egna
-    sortableElements();
+   /*  sortableElements(); */
     createDialogs();
     dialogElements();
-    datePick();
+    /* datePick(); */
     createTabs();
     storeSessions();
-    
+   
     
     
     
   }
 
   // All kod här
+
+  function sortableElements() {
+
+    $('.listContainer').sortable({
+      connectWith: 'onelist',
+      containment: "parent",
+      forcePlaceholderSize: true
+    });
+
+    $('.list-cards').sortable({ connectWith: '.list-cards' });
+ 
+}
+
+/*  $('.dialog').dialog({
+  autoOpen: false
+}); */
+function createTabs() {
+  $( ".dialog" ).tabs();
+}
+
+function dialogElements() {
+  $( ".dialog" ).dialog({
+    autoOpen: false,
+  });
+}
+
+function showDialog() {
+ /*  $('.buttonShowDialog').dialog( "option", "autoOpen", true ); */
+  $( ".dialog" ).dialog({
+    autoOpen: true,
+  });
+}
+
+function datePick() {
+  $('#datepick').each(function(){
+    $(this).datepicker({
+     
+    });
+});
+}
+
+function hideDialog() {
+  $(this).closest('.dialog').hide();
+ /*  $('.ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle').css("display", "none");  */
+}
+
+function storeSessions() {
+  var htmlContents = document.documentElement.innerHTML;
+  console.log(htmlContents);
+
+  localStorage.setItem('myBook', JSON.stringify(htmlContents ));
+}
+
+function sessioncome() {
+  var hej = localStorage.getItem('myBook');
+  console.log(hej);
+}
+
+function archiveCard() {
+ 
+  /* $(event.target).closest('.card').toggle("drop"); */ // DROP EFFECT
+  $(this).closest('.card').appendTo('.thearchive');
+  
+}
+
+function showArchive() {
+  $('.thearchive' ).toggle('slow');
+ 
+}
+
+function gameOver() {
+ 
+    $( ".board" ).toggle( "explode" );
+
+} 
+
+// WIDGET
+
+/* $.widget("js.changebackground", {
+    _create: function() {
+      function randomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      this.element
+        .css('background', randomColor());
+    }
+}); */
+
+
+/* $.widget("js.changebackground", {
+  
+  options: {
+  },
+  
+  
+  _create: function() {
+      
+      this.element.css('background', randomColor());
+  },
+  randomColor: function() {
+    
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    
+  }
+}); */
+
+
+
   return {
     init: init
   };
@@ -350,9 +303,8 @@ const jtrello = (function() {
 $("document").ready(function() {
   jtrello.init();
 
-  /* $('.board').changebackground(); */
+  $('.board').changebackground();
 
   /* $.widget("js.changebackground", {
-
   }).  */
 });
